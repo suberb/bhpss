@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generator Oświadczeń Bolt Hub</title>
+    <style>
+        * { box-sizing: border-box; }
+        @page { margin: 0 !important; size: A4; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; font-optical-sizing: auto; color: #000; line-height: 1.5; margin: 0 !important; padding: 0; background-color: #f4f7f6; }
+        
+        .container {  
+            width: 210mm; height: 297mm; margin: 0 auto; padding: 20mm;
+            background-color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; position: relative;
+        }
+
+        .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #34D186; padding-bottom: 8px; margin-bottom: 50px; margin-top: 5mm; }
+        .logo-box svg { height: 40px; width: auto; }
+
+        .doc-title { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+        .doc-title h1 { margin: 0; font-size: 24px; font-weight: bold; line-height: 0.85; }
+        .doc-title p { margin: 0; font-size: 12px; color: #444; margin-top: 5px; }
+
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 50px; }
+        .input-box { width: 260px; } 
+        .input-box.right-align { width: 200px;}
+        .input-box.right-align { margin-left: auto; text-align: right; }
+        
+        .value-field { border-bottom: 0.5px solid #888; min-height: 30px; display: flex; align-items: flex-end; padding-bottom: 5px; }
+        input.live-input {
+            width: 100%; border: none; outline: none; font-size: 18px; font-weight: bold;
+            text-transform: uppercase; background: transparent; padding: 0;
+        }
+        input.live-input::placeholder { color: #eee; text-transform: none; font-weight: normal; font-size: medium;}
+
+        .label-main { font-size: 9px; font-weight: bold; text-transform: uppercase; display: block; margin-top: 8px; }
+        .label-sub { font-size: 8px; color: #666; display: block; margin-top: 2px; text-transform: uppercase;}
+
+        .statement-row { display: grid; grid-template-columns: 37px 1fr; margin-bottom: 18px; }
+        .lang-tag { font-weight: bold; color: #34D186; font-size: 13px; }
+        .text-body { font-size: 12px; text-align: justify; line-height: 1.6; }
+        .hub-address-val { font-weight: bold; }
+
+        .checklist { margin-bottom: 20px; }
+        .check-row { display: flex; align-items: flex-start; margin-bottom: 12px; }
+        
+        .check-row input[type="checkbox"] { 
+            width: 22px; height: 22px; margin: 7px 15px 0 0; 
+            accent-color: #34D186; flex-shrink: 0; 
+            appearance: none; border: 2px solid #34D186; border-radius: 6px; 
+            cursor: pointer; position: relative; 
+        }
+        .check-row input[type="checkbox"]:checked { background-color: #34D186; }
+        .check-row input[type="checkbox"]:checked::after {
+            content: '✔'; position: absolute; color: white; font-size: 16px; left: 3px; top: 0px;
+        }
+
+        .check-text { font-size: 12px; font-weight: normal; line-height: 1.6; }
+        .check-text b { font-weight: bold; }
+
+        .signature-area { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; margin-top: 60px; }
+        .sig-line { border-top: 0.5px solid #888; text-align: center; padding-top: 0px; position: relative; min-height: 60px; }
+        .current-date { position: absolute; top: -24px; left: 0; font-size: 12px; font-style: italic; font-weight: bold; }
+
+        .system-footer { margin-top: auto; font-size: 8px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        .legal-footer { margin-top: 10px; font-size: 8px; color: #888; text-align: justify; border-top: 1px solid #eee; padding-top: 15px; }
+
+        .btn { position: fixed; border: none; cursor: pointer; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        #print-btn { bottom: 30px; right: 30px; background: #34D186; color: white; }
+        #clear-btn { bottom: 100px; right: 30px; background: white; color: #34D186; border: 1px solid #ddd; }
+        #config-btn { bottom: 170px; right: 30px; background: #2f313f; color: white; }
+
+        #config-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.85); z-index: 10000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .config-card { background: white; padding: 30px; border-radius: 25px; width: 90%; max-width: 450px; }
+        .config-card h2 { margin-top: 0; font-size: 24px; font-weight: bold;}
+        .config-card label { display: block; margin: 15px 0 5px; color: #2f313f; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        .config-card label.info { display: block; margin: 22px 0 0px; color: #34D186; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        .config-card input, .config-card select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 15px; font-size: 16px; }
+        .config-card button { width: 100%; margin-top: 25px; padding: 15px; background: #34D186; color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 16px; }
+
+        @media print {
+            .btn, #config-overlay { display: none !important; }
+            .container { box-shadow: none; margin: 0; }
+            input.live-input::placeholder { color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="config-overlay">
+    <div class="config-card">
+        <h2>Konfiguracja</h2>
+        <label>Twoje imię i nazwisko*</label>
+        <input type="text" id="cfg-name" placeholder="Jan Kowalski">
+        
+        <label>Wybierz hub*</label>
+        <select id="cfg-city">
+            <option value="">--- bez adresu ---</option>
+        </select>
+        
+        <label class="info">* Nie wpisuj danych, żeby wydrukować puste oświadczenie</label>
+
+        <button onclick="saveProfile()">Zapisz</button>
+    </div>
+</div>
+
+<button id="clear-btn" class="btn" title="Odśwież formularz" onclick="clearForm()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+</button>
+
+<button id="config-btn" class="btn" title="Zmień Hub / Operatora" onclick="resetProfile()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+</button>
+
+<button id="print-btn" class="btn" onclick="window.print()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2-0 0 1-2-2v-5a2 2-0 0 1 2-2h16a2 2-0 0 1 2 2v5a2 2-0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+</button>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-box">
+            <svg width="68" height="40" viewBox="0 0 54 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.696 11.1173C16.7976 7.6942 15.7506 3.2072 12.3575 1.08706C11.2188 0.377772 9.89669 0 8.5593 0H0V23.5914H9.62921C13.6185 23.5914 16.8511 20.3303 16.8511 16.3059C16.8511 14.3553 16.0793 12.4896 14.696 11.1173ZM5.50241 5.55093H8.5593C9.50693 5.55093 10.2788 6.3296 10.2788 7.28559C10.2788 8.24159 9.50693 9.02026 8.5593 9.02026H5.50241V5.55093ZM9.62921 18.0405H5.50241V14.5712H9.62921C10.5768 14.5712 11.3487 15.3499 11.3487 16.3059C11.3487 17.2618 10.5768 18.0405 9.62921 18.0405ZM43.4461 0V23.5914H37.9437V1.17957L43.4461 0ZM27.3974 6.69965C22.7127 6.69965 18.9069 10.5313 18.9069 15.265C18.9069 19.991 22.7051 23.8304 27.3974 23.8304C32.0821 23.8304 35.8879 19.9988 35.8879 15.265C35.8803 10.539 32.0821 6.69965 27.3974 6.69965ZM27.3974 18.0405C25.8766 18.0405 24.6462 16.7993 24.6462 15.265C24.6462 13.7308 25.8766 12.4896 27.3974 12.4896C28.9182 12.4896 30.1486 13.7308 30.1486 15.265C30.1486 16.7993 28.9182 18.0405 27.3974 18.0405ZM30.1486 28.6027C30.1486 30.1355 28.9168 31.3782 27.3974 31.3782C25.878 31.3782 24.6462 30.1355 24.6462 28.6027C24.6462 27.0698 25.878 25.8272 27.3974 25.8272C28.9168 25.8272 30.1486 27.0698 30.1486 28.6027ZM53.9923 7.01576V12.559H51.2488V16.9226C51.2488 18.241 51.6691 19.2124 52.7696 19.2124C53.1899 19.2201 53.6026 19.1661 54 19.0505V23.1366C53.1746 23.5914 52.2576 23.8304 51.3176 23.8304H51.2488C51.2134 23.8304 51.178 23.8284 51.1436 23.8264C51.1112 23.8245 51.0798 23.8227 51.0501 23.8227H50.9966L50.8972 23.815C47.8251 23.6531 45.7387 21.7026 45.7387 18.3181V18.3026V18.2795V12.5667V3.95504L51.2411 2.77546V7.01576H53.9923Z" fill="#2F313F"/></svg>
+        </div>
+        <div class="doc-title">
+            <h1>Oświadczenie</h1>
+            <p>Statement / Заява</p>
+        </div>
+    </div>
+
+    <div class="data-grid">
+        <div class="input-box">
+            <div class="value-field"><input type="text" id="input-name" class="live-input" placeholder="IMIĘ I NAZWISKO KIEROWCY"></div>
+            <span class="label-main">imię i nazwisko</span>
+            <span class="label-sub">name and surname / Ім’я та прізвище</span>
+        </div>
+        <div class="input-box right-align">
+            <div class="value-field"><input type="text" id="input-id" class="live-input" style="text-align: right;" placeholder="SERIA I NR DOKUMENTU"></div> 
+            <span class="label-main right-align">nr dokumentu tożsamości</span>
+            <span class="label-sub right-align">ID number / номер dokumenta</span>
+        </div>
+    </div>
+
+    <div class="content-block">
+        <div class="statement-row">
+            <div class="lang-tag">PL:</div>
+            <div class="text-body">Niniejszym oświadczam, że stawiłem/am się w Punkcie Obsługi Kierowców firmy Bolt*, zlokalizowanym pod adresem: <span class="hub-address-val address-field">________________________________________</span> w celu weryfikacji w trybie osobistego stawiennictwa poprzez wykonanie zdjęcia umożliwiającego ustalenie mojego wizerunku oraz okazanie oryginałów następujących dokumentów:</div>
+        </div>
+        <div class="statement-row">
+            <div class="lang-tag">EN:</div>
+            <div class="text-body">I hereby declare that I have appeared at the Bolt* Driver Service Point, located at: <span class="hub-address-val address-field">________________________________________</span> for the purpose of in-person verification by taking a photograph which makes it possible to establish my likeness and presenting the originals of the following documents:</div>
+        </div>
+        <div class="statement-row">
+            <div class="lang-tag">UA:</div>
+            <div class="text-body"> Я, нижчепідписаний, заявляю, що я з'явився в офісі Обслуговування Водіїв компанії Bolt*, що розташований за адресою: <span class="hub-address-val address-field">________________________________________</span>, для особистої перевірки, зробивши фотографію, яка дозволяє ідентифікувати мою особистість, та пред'явивши оригінали наступних документів:</div>
+        </div>
+    </div>
+
+    <div class="checklist" style="margin-top: 25px;">
+        <div class="check-row">
+            <input type="checkbox" class="auto-check">
+            <span class="check-text"><b>Dokument tożsamości</b> (dowód osobisty, paszport lub karta pobytu)<br>Identification / Документ, що підтверджує osobu</span>
+        </div>
+        <div class="check-row">
+            <input type="checkbox" class="auto-check">
+            <span class="check-text"><b>Prawo jazdy</b> (wydane przez polskie organy)<br>Polish driving license / Польське водійське посвідчення</span>
+        </div>
+        <div class="check-row">
+            <input type="checkbox" class="auto-check">
+            <span class="check-text"><b>Zaświadczenie o niekaralności</b> (oryginał, nie starsze niż 30 dni)<br>A Polish criminal record certificate / Польська довідка pro відсутність судимості</span>
+        </div>
+    </div>
+
+    <div class="signature-area">
+        <div class="sig-line">
+            <span class="current-date date-display"></span>
+            <span class="label-main label-driver">DATA + CZYTELNY PODPIS KIEROWCY</span>
+            <span class="label-sub sub-driver">DATE + LEGIBLE SIGNATURE / дата + ROZBIРЛИВИЙ ПІDПИС</span>
+        </div>
+        <div class="sig-line">
+            <span class="current-date date-display"></span>
+            <span class="label-main label-verifier">DATA + PODPIS OSOBY WERYFIKUJĄCEJ</span>
+            <span class="label-sub sub-verifier">DATE + VERIFIER'S SIGNATURE / дата + ПІDПИС ПЕРEVIRIAIUCEGO</span>
+        </div>
+    </div>
+
+    <div id="sys-footer" class="system-footer">BOLT HUB</div>
+
+    <div class="legal-footer">
+        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. lub innej spółki z grupy kapitałowej Bolt<br>
+        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. or another company of the Bolt group<br>
+        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. або іншої компанії з групи компаній Bolt
+    </div>
+</div>
+
+<script>
+    const hubs = {
+        "Biała Podlaska": "ul. Stefana Żeromskiego 3, 21-500 Biała Podlaska",
+        "Bełchatów": "ul. Okrzei 45, 97-400 Bełchatów",
+        "Białystok": "ul. Jurowiecka 1, 15-101 Białystok",
+        "Bielsko-Biała": "ul. Karpacka 34, 43-316 Bielsko-Biała",
+        "Bydgoszcz - Iglasta": "ul. Iglasta 1C, 85-391 Bydgoszcz",
+        "Bydgoszcz - Kruszwicka": "ul. Kruszwicka 1, 85-001 Bydgoszcz",
+        "Chełm": "Al. Armii Krajowej 11A, 22-100 Chełm",
+        "Ciechanów": "ul. 11 Pułku Ułanów Legionowych 9b, 06-400 Ciechanów",
+        "Częstochowa": "al. Armii Krajowej 42, 42-202 Częstochowa",
+        "Dębica": "ul. Rzeszowska 131, 39-200 Dębica",
+        "Elbląg": "al. Grunwaldzka 2, 82-300 Elbląg",
+        "Ełk": "ul. Mickiewicza 19/L3, 19-300 Ełk",
+        "Gdańsk": "ul. Obrońców Wybrzeża 1, 80-398 Gdańsk",
+        "Gniezno": "Osiedle Władysława Łokietka 25I, 62-200 Gniezno",
+        "Gorzów Wielkopolski": "ul. Kombatantów 30, 66-400 Gorzów Wielkopolski",
+        "Grudziądz": "ul. Legionów 5, 86-300 Grudziądz",
+        "Inowrocław": "ul. Wojska Polskiego 19d, 88-110 Inowrocław",
+        "Jelenia Góra": "ul. Druciana 2, 58-500 Jelenia Góra",
+        "Kalisz": "ul. Młynarska 55, 62-800 Kalisz",
+        "Katowice": "al. Walentego Roździeńskiego 97, 40-203 Katowice",
+        "Kielce": "ul. Ceglana 35, 25-322 Kielce",
+        "Konin": "ul. Kardynała Stefana Wyszyńskiego 7a, 62-510 Konin",
+        "Koszalin": "ul. Poprzeczna 7, 75-073 Koszalin",
+        "Kraków": "ul. Podgórska 34, 31-356 Kraków",
+        "Legnica": "ul. Adama Asnyka 45, 59-220 Legnica",
+        "Łódź": "al. marsz. Józefa Piłsudskiego 94, 92-202 Łódź",
+        "Leszno": "ul. Armii Krajowej 15, 64-100 Leszno",
+        "Lubin": "ul. Kolejowa 1, 59-300 Lubin",
+        "Lublin": "ul. Orkana 4, 20-504 Lublin",
+        "Mława": "ul. Padlewskiego 22/15, 06-500 Mława",
+        "Nowy Sącz": "ul. Nawojowska 38, 33-300 Nowy Sącz",
+        "Nowy Targ": "ul. Długa 49A, 34-400 Nowy Targ",
+        "Olsztyn": "ul. Tadeusza Kościuszki 8, 11-041 Olsztyn",
+        "Oława": "ul. 11 Listopada 2/16, 55-200 Oława",
+        "Opole": "ul. Majora 'Hubala' 10, 46-020 Opole",
+        "Ostrołęka": "ul. Generała Tadeusza Kościuszki 37, 07-410 Ostrołęka",
+        "Ostróda": "ul. Chrobrego 9C, 14-100 Ostróda",
+        "Ostrowiec Świętokrzyski": "ul. Siennieńska 151, 27-400 Ostrowiec Świętokrzyski",
+        "Piotrków Trybunalski": "ul. Wojska Polskiego 15, 97-300 Piotrków Trybunalski",
+        "Piła": "ul. 1 Maja 4a, 64-920 Piła",
+        "Płock": "al. Jana Pawła II 94, 09-410 Płock",
+        "Poznań": "ul. Pleszewska 1, 61-139 Poznań",
+        "Przemyśl": "ul. Grunwaldzka 48B/1, 37-700 Przemyśl",
+        "Radom": "ul. Toruńska 1, 26-600 Radom",
+        "Rybnik": "ul. Marii Skłodowskiej-Curie 7, 44-200 Rybnik",
+        "Rzeszów": "al. Majora Wacława Kopisto 1, 35-315 Rzeszów",
+        "Siedlce": "ul. Kazimierza Pułaskiego 1/3, 08-110 Siedlce",
+        "Słupsk": "ul. Księcia Józefa Poniatowskiego 42, 76-200 Słupsk",
+        "Suwałki": "ul. 1 Maja 1/1, 16-400 Suwałki",
+        "Starogard Gdański": "al. Armii Krajowej 22, 83-200 Starogard Gdański",
+        "Świnoujście": "ul. Bohaterów Września 4, 72-600 Świnoujście",
+        "Szczecin": "al. Bohaterów Warszawy 42, 70-366 Szczecin",
+        "Szczecinek": "ul. Władysława Bartoszewskiego 22-24, 78-400 Szczecinek",
+        "Tarnobrzeg": "ul. Sandomierska 6, 39-400 Tarnobrzeg",
+        "Tarnów": "ul. Lwowska 13, 33-100 Tarnów",
+        "Tczew": "ul. Pomorska 18/4, 83-110 Tczew",
+        "Toruń - Grudziądzka": "ul. Grudziądzka 162, 87-100 Toruń",
+        "Toruń - Jakuba Suleckiego": "ul. Jakuba Suleckiego 2, 87-100 Toruń",
+        "Warszawa": "al. Jerozolimskie 96, Regus – Warsaw Equator",
+        "Władysławowo": "ul. Siedleckiego 1, 84-120 Władysławowo",
+        "Włocławek": "ul. Spółdzielcza 10, 87-810 Włocławek",
+        "Wrocław - Gen. Józefa Hallera": "al. Generała Józefa Hallera 52, 50-984 Wrocław",
+        "Wrocław - Tęczowa": "ul. Tęczowa 30, 53-602 Wrocław",
+        "Zamość": "ul. Prymasa Stefana Wyszyńskiego 39D, 22-400 Zamość",
+        "Zielona Góra": "ul. Bolesława Chrobrego 32, 65-001 Zielona Góra"
+    };
+
+    let user = JSON.parse(localStorage.getItem('bolt_user_profile'));
+
+    function populateHubs() {
+        const select = document.getElementById('cfg-city');
+        const sortedCities = Object.keys(hubs).sort();
+        sortedCities.forEach(city => {
+            const opt = document.createElement('option');
+            opt.value = city;
+            opt.innerText = city;
+            select.appendChild(opt);
+        });
+    }
+
+    function setup() {
+        populateHubs();
+        if (!user) {
+            document.getElementById('config-overlay').style.display = 'flex';
+        } else {
+            renderUser();
+        }
+    }
+
+    function saveProfile() {
+        const name = document.getElementById('cfg-name').value.trim();
+        const city = document.getElementById('cfg-city').value;
+        
+        user = { 
+            name: name || "", 
+            city: city || "", 
+            address: city ? hubs[city] : "________________________________________" 
+        };
+        localStorage.setItem('bolt_user_profile', JSON.stringify(user));
+        document.getElementById('config-overlay').style.display = 'none';
+        renderUser();
+    }
+
+    function renderUser() {
+        document.querySelectorAll('.address-field').forEach(el => el.innerText = user.address);
+        updateSystemFooter();
+        updateLabels(false);
+    }
+
+    function updateSystemFooter() {
+        let footerParts = ["BOLT HUB"];
+        
+        if (user && user.city) {
+            footerParts.push(user.city.toUpperCase());
+        }
+
+        // Dodaj podpis i datę TYLKO jeśli wpisano Imię i Nazwisko operatora
+        if (user && user.name !== "") {
+            const parts = user.name.trim().split(/\s+/);
+            const sig = parts.length >= 2 ? (parts[0].substring(0,3) + parts[parts.length-1].substring(0,3)).toUpperCase() : user.name.substring(0,6).toUpperCase();
+            footerParts.push(sig);
+
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
+            const t = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            footerParts.push(`${d} ${t}`);
+        }
+        
+        document.getElementById('sys-footer').innerText = footerParts.join(" • ");
+    }
+
+    function updateLabels(hasText) {
+        const driverMain = document.querySelector('.label-driver');
+        const driverSub = document.querySelector('.sub-driver');
+        const verifierMain = document.querySelector('.label-verifier');
+        const verifierSub = document.querySelector('.sub-verifier');
+
+        if (hasText) {
+            driverMain.innerText = "czytelny podpis kierowcy";
+            driverSub.innerText = "legible signature / rozbiрliвий підпис";
+            verifierMain.innerText = "podpis osoby weryfikującej";
+            verifierSub.innerText = "verifier's signature / підпис перевіряюcego";
+        } else {
+            driverMain.innerText = "DATA + CZYTELNY PODPIS KIEROWCY";
+            driverSub.innerText = "DATE + LEGIBLE SIGNATURE / дата + ROZBIРЛИВИЙ ПІDПИС";
+            verifierMain.innerText = "DATA + PODPIS OSOBY WERYFIKUJĄCEJ";
+            verifierSub.innerText = "DATE + VERIFIER'S SIGNATURE / дата + ПІDПИС ПЕРEVIRIAIUCEGO";
+        }
+    }
+
+    document.getElementById('input-name').addEventListener('input', (e) => {
+        const hasText = e.target.value.trim().length > 0;
+        const today = new Date().toLocaleDateString('pl-PL');
+        document.querySelectorAll('.auto-check').forEach(cb => cb.checked = hasText);
+        document.querySelectorAll('.date-display').forEach(ds => ds.innerText = hasText ? today : "");
+        updateLabels(hasText);
+    });
+
+    function clearForm() {
+        document.getElementById('input-name').value = "";
+        document.getElementById('input-id').value = "";
+        document.querySelectorAll('.auto-check').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.date-display').forEach(ds => ds.innerText = "");
+        updateLabels(false);
+        if(user) updateSystemFooter();
+    }
+
+    function resetProfile() {
+        if(confirm("Zmienić dane operatora?")) {
+            localStorage.removeItem('bolt_user_profile');
+            location.reload();
+        }
+    }
+
+    setup();
+</script>
+</body>
+</html>
