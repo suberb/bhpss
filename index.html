@@ -32,7 +32,7 @@
 
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 50px; }
         .input-box { width: 260px; } 
-        .input-box.right-align { width: 200px;}
+        .input-box.right-align { width: 210px;}
         .input-box.right-align { margin-left: auto; text-align: right; }
         
         .value-field { border-bottom: 0.5px solid #888; min-height: 30px; display: flex; align-items: flex-end; padding-bottom: 5px; }
@@ -43,7 +43,7 @@
         input.live-input::placeholder { color: #eee; text-transform: none; font-weight: normal; font-size: medium;}
 
         .label-main { font-size: 9px; font-weight: bold; text-transform: uppercase; display: block; margin-top: 8px; }
-        .label-sub { font-size: 8px; color: #666; display: block; margin-top: 2px; text-transform: uppercase;}
+        .label-sub { font-size: 7px; color: #3c3c3c; display: block; margin-top: 2px; text-transform: uppercase;}
 
         .statement-row { display: grid; grid-template-columns: 37px 1fr; margin-bottom: 18px; }
         .lang-tag { font-weight: bold; color: #34D186; font-size: 13px; }
@@ -54,7 +54,7 @@
         .check-row { display: flex; align-items: flex-start; margin-bottom: 12px; }
         
         .check-row input[type="checkbox"] { 
-            width: 22px; height: 22px; margin: 7px 15px 0 0; 
+            width: 22px; height: 22px; margin: 5px 15px 0 0; 
             accent-color: #34D186; flex-shrink: 0; 
             appearance: none; border: 2px solid #34D186; border-radius: 6px; 
             cursor: pointer; position: relative; 
@@ -64,10 +64,11 @@
             content: '✔'; position: absolute; color: white; font-size: 16px; left: 3px; top: 0px;
         }
 
-        .check-text { font-size: 12px; font-weight: normal; line-height: 1.6; }
+        .check-text { font-size: 12px; font-weight: normal; line-height: 1.4; }
         .check-text b { font-weight: bold; }
+        .subtext {font-size: 10px;}
 
-        .signature-area { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; margin-top: 60px; }
+        .signature-area { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; margin-top: 40px; }
         .sig-line { border-top: 0.5px solid #888; text-align: center; padding-top: 0px; position: relative; min-height: 60px; }
         .current-date { position: absolute; top: -24px; left: 0; font-size: 12px; font-style: italic; font-weight: bold; }
 
@@ -136,7 +137,7 @@
         </div>
         <div class="doc-title">
             <h1>Oświadczenie</h1>
-            <p>Statement / Заява</p>
+            <p>Statement / Заява / Заявление</p>
         </div>
     </div>
 
@@ -144,42 +145,55 @@
         <div class="input-box">
             <div class="value-field"><input type="text" id="input-name" class="live-input" placeholder="IMIĘ I NAZWISKO KIEROWCY"></div>
             <span class="label-main">imię i nazwisko</span>
-            <span class="label-sub">name and surname / Ім’я та прізвище</span>
+            <span class="label-sub">full name / Ім’я та прізвище / Имя и фамилия</span>
         </div>
         <div class="input-box right-align">
             <div class="value-field"><input type="text" id="input-id" class="live-input" style="text-align: right;" placeholder="SERIA I NR DOKUMENTU"></div> 
             <span class="label-main right-align">nr dokumentu tożsamości</span>
-            <span class="label-sub right-align">ID number / номер dokumenta</span>
+            <span class="label-sub right-align">ID number / номер документа / Номер документа</span>
         </div>
     </div>
 
     <div class="content-block">
         <div class="statement-row">
             <div class="lang-tag">PL:</div>
-            <div class="text-body">Niniejszym oświadczam, że stawiłem/am się w Punkcie Obsługi Kierowców firmy Bolt*, zlokalizowanym pod adresem: <span class="hub-address-val address-field">________________________________________</span> w celu weryfikacji w trybie osobistego stawiennictwa poprzez wykonanie zdjęcia umożliwiającego ustalenie mojego wizerunku oraz okazanie oryginałów następujących dokumentów:</div>
+            <div class="text-body">Niniejszym oświadczam, że stawiłem(am) się w Punkcie Obsługi Kierowców firmy Bolt*, zlokalizowanym pod adresem: <span class="hub-address-val address-field">________________________________________</span>, w celu weryfikacji w trybie osobistego stawiennictwa poprzez wykonanie fotografii umożliwiającej ustalenie mojego wizerunku oraz okazanie oryginałów następujących dokumentów:</div>
         </div>
         <div class="statement-row">
             <div class="lang-tag">EN:</div>
-            <div class="text-body">I hereby declare that I have appeared at the Bolt* Driver Service Point, located at: <span class="hub-address-val address-field">________________________________________</span> for the purpose of in-person verification by taking a photograph which makes it possible to establish my likeness and presenting the originals of the following documents:</div>
+            <div class="text-body">I hereby declare that I appeared at the Bolt* Driver Service Point, located at: <span class="hub-address-val address-field">________________________________________</span>, for the purpose of in-person verification, including taking a photograph enabling my identification and presenting the originals of the following documents:</div>
         </div>
         <div class="statement-row">
             <div class="lang-tag">UA:</div>
-            <div class="text-body"> Я, нижчепідписаний, заявляю, що я з'явився в офісі Обслуговування Водіїв компанії Bolt*, що розташований за адресою: <span class="hub-address-val address-field">________________________________________</span>, для особистої перевірки, зробивши фотографію, яка дозволяє ідентифікувати мою особистість, та пред'явивши оригінали наступних документів:</div>
+            <div class="text-body"> Я, нижчепідписаний(а), заявляю, що з'явився(лася) до офісу Обслуговування Водіїв компанії Bolt*, розташованого за адресою: <span class="hub-address-val address-field">________________________________________</span>, з метою особистої перевірки, включаючи виконання фотографії, що дозволяє ідентифікувати мою особу, та пред’явлення оригіналів наступних документів:</div>
+        </div>
+        <div class="statement-row">
+            <div class="lang-tag">RU:</div>
+            <div class="text-body"> Я, нижеподписавшийся(ая), заявляю, что явился(лась) в офис Обслуживания Водителей компании Bolt*, расположенный по адресу: <span class="hub-address-val address-field">________________________________________</span>, с целью личной проверки, включая выполнение фотографии, позволяющей идентифицировать мою личность, и предъявление оригиналов следующих документов:</div>
         </div>
     </div>
 
-    <div class="checklist" style="margin-top: 25px;">
+    <div class="checklist" style="margin-top: 15px;">
         <div class="check-row">
             <input type="checkbox" class="auto-check">
-            <span class="check-text"><b>Dokument tożsamości</b> (dowód osobisty, paszport lub karta pobytu)<br>Identification / Документ, що підтверджує osobu</span>
+            <span class="check-text">
+                <b>Dokument tożsamości</b> (dowód osobisty, paszport lub karta pobytu)<br>
+            <span class="subtext">Identity document / Документ, що підтверджує особу / Документ, удостоверяющий личность</span>
+            </span>
         </div>
         <div class="check-row">
             <input type="checkbox" class="auto-check">
-            <span class="check-text"><b>Prawo jazdy</b> (wydane przez polskie organy)<br>Polish driving license / Польське водійське посвідчення</span>
+            <span class="check-text">
+                <b>Prawo jazdy</b> (wydane przez polskie organy)<br>
+            <span class="subtext">Polish driving license / Польське водійське посвідчення / Польское водительское удостоверение</span>
+            </span>
         </div>
         <div class="check-row">
             <input type="checkbox" class="auto-check">
-            <span class="check-text"><b>Zaświadczenie o niekaralności</b> (oryginał, nie starsze niż 30 dni)<br>A Polish criminal record certificate / Польська довідка pro відсутність судимості</span>
+            <span class="check-text">
+                <b>Zaświadczenie o niekaralności</b> (oryginał, nie starsze niż 30 dni)<br>
+            <span class="subtext">Polish certificate of no criminal record / Польська довідка про відсутність судимості / Польская справка об отсутствии судимости</span>
+            </span>
         </div>
     </div>
 
@@ -187,21 +201,19 @@
         <div class="sig-line">
             <span class="current-date date-display"></span>
             <span class="label-main label-driver">DATA + CZYTELNY PODPIS KIEROWCY</span>
-            <span class="label-sub sub-driver">DATE + LEGIBLE SIGNATURE / дата + ROZBIРЛИВИЙ ПІDПИС</span>
+            <span class="label-sub sub-driver">DATE + DRIVER’S SIGNATURE / дата + підпис водія / Дата + подпись водителя</span>
         </div>
         <div class="sig-line">
             <span class="current-date date-display"></span>
             <span class="label-main label-verifier">DATA + PODPIS OSOBY WERYFIKUJĄCEJ</span>
-            <span class="label-sub sub-verifier">DATE + VERIFIER'S SIGNATURE / дата + ПІDПИС ПЕРEVIRIAIUCEGO</span>
+            <span class="label-sub sub-verifier">DATE + VERIFIER’S SIGNATURE / дата + підпис перевіряючої особи / Дата + подпись проверяющего лица</span>
         </div>
     </div>
 
     <div id="sys-footer" class="system-footer">BOLT HUB</div>
 
     <div class="legal-footer">
-        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. lub innej spółki z grupy kapitałowej Bolt<br>
-        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. or another company of the Bolt group<br>
-        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. або іншої компанії з групи компаній Bolt
+        * Bolt Rides PL sp. z o.o., Bolt Poland sp. z o.o., Bolt Services PL sp. z o.o. lub innej spółki z grupy kapitałowej Bolt / or another company of the Bolt group / або іншої компанії з групи компаній Bolt / или другой компании группы Bolt
     </div>
 </div>
 
@@ -346,14 +358,14 @@
 
         if (hasText) {
             driverMain.innerText = "czytelny podpis kierowcy";
-            driverSub.innerText = "legible signature / rozbiрliвий підпис";
+            driverSub.innerText = "DRIVER’S SIGNATURE / підпис водія / подпись водителя";
             verifierMain.innerText = "podpis osoby weryfikującej";
-            verifierSub.innerText = "verifier's signature / підпис перевіряюcego";
+            verifierSub.innerText = "verifier's signature / підпис перевіряючого / подпись проверяющего";
         } else {
             driverMain.innerText = "DATA + CZYTELNY PODPIS KIEROWCY";
-            driverSub.innerText = "DATE + LEGIBLE SIGNATURE / дата + ROZBIРЛИВИЙ ПІDПИС";
+            driverSub.innerText = "DATE + DRIVER’S SIGNATURE / дата + підпис водія / Дата + подпись водителя";
             verifierMain.innerText = "DATA + PODPIS OSOBY WERYFIKUJĄCEJ";
-            verifierSub.innerText = "DATE + VERIFIER'S SIGNATURE / дата + ПІDПИС ПЕРEVIRIAIUCEGO";
+            verifierSub.innerText = "DATE + VERIFIER'S SIGNATURE / дата + підпис перевіряючого / Дата + подпись проверяющего";
         }
     }
 
