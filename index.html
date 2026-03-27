@@ -443,20 +443,21 @@
                 const driverSub = document.querySelector('.sub-driver');
                 const verifierMain = document.querySelector('.label-verifier');
                 const verifierSub = document.querySelector('.sub-verifier');
-
+            
                 if (hasText) {
                     driverMain.innerText = "czytelny podpis kierowcy";
-                    driverSub.innerText = "DRIVER’S SIGNATURE · підпис водія · подпись водителя";
+                    driverSub.innerHTML = "DRIVER’S SIGNATURE · підпис водія<br>подпись водителя";
+                    
                     verifierMain.innerText = "podpis osoby weryfikującej";
-                    verifierSub.innerText = "verifier's signature · підпис перевіряючого · подпись проверяющего";
+                    verifierSub.innerHTML = "verifier's signature · підпис перевіряючого<br>подпись проверяющего";
                 } else {
                     driverMain.innerText = "DATA + CZYTELNY PODPIS KIEROWCY";
-                    driverSub.innerText = "DATE + DRIVER’S SIGNATURE · дата + підпис водія · Дата + подпись водителя";
+                    driverSub.innerHTML = "DATE + DRIVER’S SIGNATURE · дата + підпис водія<br>Дата + подпись водителя";
+                    
                     verifierMain.innerText = "DATA + PODPIS OSOBY WERYFIKUJĄCEJ";
-                    verifierSub.innerText = "DATE + VERIFIER'S SIGNATURE · дата + підпис перевіряючого · Дата + подпись проверяющего";
+                    verifierSub.innerHTML = "DATE + VERIFIER'S SIGNATURE · дата + підпис перевіряючої osoby<br>Дата + подпись проверяющего лица";
                 }
             }
-
 
             document.getElementById('input-name').addEventListener('input', (e) => {
                 const val = e.target.value.trim();
