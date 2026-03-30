@@ -15,7 +15,10 @@
         <style>
             * { box-sizing: border-box; }
 
-            @page { margin: 0 !important; size: A4; }
+            @page { 
+                margin: 0 !important; 
+                size: A4 portrait; 
+            }
 
             :root {
                 --bolt-green: #34D186;
@@ -29,6 +32,7 @@
                 margin: 0 !important;
                 padding: 0;
                 background-color: #f4f7f6;
+                overflow-x: hidden;
             }
 
             .container {
@@ -49,11 +53,26 @@
                     -webkit-print-color-adjust: exact !important;
                     print-color-adjust: exact !important;
                 }
-                .container { box-shadow: none; margin: 0; }
+                html, body {
+                    width: 210mm;
+                    height: 297mm;
+                    overflow: hidden;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                .container {
+                    box-shadow: none;
+                    margin: 0 !important;
+                    width: 210mm !important;
+                    height: 297mm !important;
+                    max-height: 297mm !important;
+                    overflow: hidden !important;
+                    page-break-after: avoid;
+                    page-break-inside: avoid;
+                    break-after: avoid;
+                }
                 .btn, #config-overlay { display: none !important; }
                 input.live-input::placeholder { color: transparent; }
-                
-                /* Przyciemnienie elementów zielonych do druku */
                 .lang-tag, .check-row input[type="checkbox"] { 
                     color: var(--bolt-green-print) !important; 
                     border-color: var(--bolt-green-print) !important; 
